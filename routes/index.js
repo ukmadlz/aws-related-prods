@@ -15,7 +15,7 @@ router.get('/:asin', function(req, res, next) {
   prodAdv = aws.createProdAdvClient(process.env.ACCESS_KEY, process.env.SECRET_KEY, process.env.ASSOC_TAG, { region: 'UK' });
 
   prodAdv.call('ItemLookup', { ResponseGroup: 'RelatedItems,Small', IdType: 'ASIN', ItemId: asin, RelationshipType: 'Tracks'}, function(err, result) {
-    if(result.Items.Item){
+    if (result.Items.Item) {
       if (result.Items.Item.RelatedItems) {
         key = Math.floor(Math.random() * result.Items.Item.RelatedItems.RelatedItem.length) + 1;
         product = result.Items.Item.RelatedItems.RelatedItem[key];
