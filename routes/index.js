@@ -27,17 +27,21 @@ router.get('/:asin', function(req, res, next) {
   // &Signature=[Request_Signature]
 
   prodAdv.call('ItemLookup', { ResponseGroup: 'RelatedItems,Small', IdType: 'ASIN', ItemId: asin, RelationshipType: 'Tracks'}, function(err, result) {
-    if (result.Items.Item.RelatedItems) {
-      key = Math.floor(Math.random() * result.Items.Item.RelatedItems.RelatedItem.length) + 1;
-      product = result.Items.Item.RelatedItems.RelatedItem[key];
-      prodAdv.call('ItemLookup', { ResponseGroup: 'OfferSummary,Large', IdType: 'ASIN', ItemId: product.Item.ASIN, RelationshipType: 'Tracks'}, function(err, result) {
-        console.log(result.Items.Item);
-        res.json({
-          id: result.Items.Item.ASIN,
-          image: result.Items.Item.LargeImage.URL,
-          price: 10.00
+    if(result.Items.Item){
+      if (result.Items.Item.RelatedItems) {
+        key = Math.floor(Math.random() * result.Items.Item.RelatedItems.RelatedItem.length) + 1;
+        product = result.Items.Item.RelatedItems.RelatedItem[key];
+        prodAdv.call('ItemLookup', { ResponseGroup: 'OfferSummary,Large', IdType: 'ASIN', ItemId: product.Item.ASIN, RelationshipType: 'Tracks'}, function(err, result) {
+          console.log(result.Items.Item);
+          res.json({
+            id: result.Items.Item.ASIN,
+            image: result.Items.Item.LargeImage.URL,
+            price: 10.00
+          });
         });
-      });
+      } else {
+        res.json({related: 0});
+      }
     } else {
       res.json({related: 0});
     }
